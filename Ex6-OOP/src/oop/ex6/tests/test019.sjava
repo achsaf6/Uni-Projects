@@ -1,5 +1,0 @@
-void a() {
-while (true) {
-int b = 5; }
-return;
-}

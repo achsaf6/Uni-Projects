@@ -1,9 +1,0 @@
-void foo() {
-int a_______b    = 66, b____a = 76;
-		foo2                (          a_______b            , b____a   );
-return;
-}
-
-void foo2(int b, int c) {
-return;
-}
