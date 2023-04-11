@@ -1,0 +1,100 @@
+yoni.pushett
+achsaf
+
+
+=============================
+=      File description     =
+=============================
+main:
+    Sjavac - The main compile checker
+    IllegalCodeException - An exception thrown when illegal code is found
+    TooManyScopeClosersException - An exception thrown when there are too many scope closers
+
+syntax:
+    CodeLine - Takes a line and finds its type
+    Method - Class that saves a method signature
+    Variable - class that saves a variable
+    SymbolTable - A symbol table that contains the variables and methods of a scope
+    InvalidAssignmentException - An exception thrown when there is an invalid assignment to a variable
+    InvalidLineException - An exception thrown when a line format is invalid
+    ScopeCollisionException - An exception thrown when there is a collision of 2 variable names in the same scope
+
+check:
+    CheckMethod - Checks a methods body
+    CheckMethodDecleration - Checks a method declaration line
+    CheckScope - Checks a block inside a method
+    CheckIfAndWhileStatement - Checks an if or while statement
+    CheckStatement - Checks a statement line of code
+    CheckVariableStatement - Checks a variable declaration or assignment line of code
+    CheckMethodCall - Checks a method call
+    Tokenizer - Separates a line of code into tokens for easy word by word checking
+    ExpectedScopeCloserException - An exception thrown when no closer for a scope is found
+    InvalidConditionException - An exception thrown when an if or while condition is invalid
+    UnknownReturnTypeException - An exception thrown when a return type of a function is unknown
+    MissingReturnStatementException - An exception that is thrown when a function is missing a return
+                                        statement at the end
+    UnexpectedEatException - An exception thrown in Tokenizer when an unexpected token is eaten
+    UnknownFormatException - An exception thrown when a lines format is unknown
+    InvalidEndingException - An exception thrown when a line ends incorrectly
+    UnknownObjectException - An exception thrown when an object is unknown
+
+
+=============================
+=          Design           =
+=============================
+We designed most of the check functions to be static.
+We created Variable and Method classes that resemble the objects in sjava, the symboltable class follows the
+methods and variables in the sjava code to verify it's correctness.
+All exceptions thrown while verifying the code extend illegalCodeException so that the main verify function
+can catch an IllegalCodeException and know that there was a problem with the code.
+The SymbolTable saves a static instance of itself which is the global symboltable.
+
+
+
+=============================
+=  Implementation details   =
+=============================
+We created a tokenizer which allowed easier verification of code in some places. Of course regex was used in others.
+Every line of code in the sjava file is read at most twice - once for building the global SymbolTable, and once for
+checking the code.
+
+==================
+=  SJava Tests   =
+==================
+test001.sjava 0 legal string and char assignment
+test002.sjava 0 assign double num to boolean
+test003.sjava 1 return in global scope
+test004.sjava 1 boolean member test with illegal value: "hhh"
+test005.sjava 1 assigning string value to int
+test006.sjava 1 bad var name
+test007.sjava 1 none existing type
+test008.sjava 1 double ;
+test009.sjava 1 missing return
+test010.sjava 1 return a variable
+test011.sjava 0 assign value to argument
+test012.sjava 0 local argument overrides global variable
+test013.sjava 1 function inside a function
+test014.sjava 0 legal code line in comment
+test015.sjava 1 extra }
+test016.sjava 1 } on same line as return
+test017.sjava 0 odd names and whitespaces
+test018.sjava 0 double to int, a lot of function calls
+test019.sjava 1 while scope closer not on own line
+test020.sjava 1 assigning new value to final variable
+
+=============================
+=    Answers to questions   =
+=============================
+
+6.1) We tried to identify the places where the sjava code might be illegal and throw appropriate exceptions in those
+places. All the exceptions extend IllegalCodeException.
+
+6.2) For different method return types we would add a check return statement class with a static function check that
+ checks if the value returned is of the type of the current method. Of course it would need to know what the
+ current method is. for that we would save the current method in a static variable somewhere, probably in checkMethod.
+
+ For methods of standard java we would add all the standard methods to the global scope in symboltable before beginning
+ the process of compilation verification.
+
+ 6.3) In CodeLine we used regexes to identify the ending of line indicating whether the current line is a statement,
+ a scope opening or a scope closing.
